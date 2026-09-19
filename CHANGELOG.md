@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.4.13 — 2026-09-19
+
+- Bump `@rodit/rodit-auth-be` to `9.16.2`.
+
 ## 0.4.12 — 2026-08-18
 
 - Log API→chain peer resolution with failed source, error, and chosen source; record `auth_success.metadata.auth_mode` (`rodit` vs API-key fallback).

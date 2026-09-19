@@ -1,321 +1,457 @@
 {
-    "id": "identyclaw-a2a",
-    "name": "OpenClaw A2A Plugin",
-    "description": "A2A peer messaging with RODiT / Passport JWT authentication",
-    "version": "0.4.12",
-    "activation": {
-        "onStartup": true
+  "id": "identyclaw-a2a",
+  "name": "OpenClaw A2A Plugin",
+  "description": "A2A peer messaging with RODiT / Passport JWT authentication",
+  "version": "0.4.13",
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "a2a_get_agents",
+      "a2a_get_agent",
+      "a2a_send_message",
+      "a2a_get_task",
+      "a2a_view_text_artifact",
+      "a2a_view_data_artifact",
+      "a2a_update_agent_card"
+    ]
+  },
+  "uiHints": {
+    "outbound": {
+      "label": "Outbound",
+      "help": "Settings for sending messages to remote A2A agents"
     },
-    "contracts": {
-        "tools": [
-            "a2a_get_agents",
-            "a2a_get_agent",
-            "a2a_send_message",
-            "a2a_get_task",
-            "a2a_view_text_artifact",
-            "a2a_view_data_artifact",
-            "a2a_update_agent_card"
-        ]
+    "outbound.agents": {
+      "label": "Remote Agents",
+      "help": "Named A2A agents to communicate with. Each key is an agent ID, value is {url, headers?}."
     },
-    "uiHints": {
-        "outbound": {
-            "label": "Outbound",
-            "help": "Settings for sending messages to remote A2A agents"
-        },
-        "outbound.agents": {
-            "label": "Remote Agents",
-            "help": "Named A2A agents to communicate with. Each key is an agent ID, value is {url, headers?}."
-        },
-        "outbound.auth": {
-            "label": "Outbound Auth",
-            "help": "Authentication for outbound A2A calls (RODiT JWT login)"
-        },
-        "outbound.auth.provider": {
-            "label": "Outbound Auth Provider",
-            "help": "Use rodit for P2P peer-issued JWT login (NEAR_CREDENTIALS_FILE_PATH)"
-        },
-        "outbound.auth.jwtCacheTtlSeconds": {
-            "label": "JWT Cache TTL",
-            "help": "Seconds to cache outbound RODiT JWT before re-login"
-        },
-        "outbound.auth.logLevel": {
-            "label": "RODiT Log Level",
-            "help": "Winston log level for @rodit/rodit-auth-be when loaded (default error)"
-        },
-        "outbound.tlsSkipVerify": {
-            "label": "Skip TLS Verify",
-            "help": "Disable TLS certificate verification for outbound HTTPS to peer agents. Use for self-signed Passport peer gateways; leave off when peers present CA-trusted certificates."
-        },
-        "inbound": {
-            "label": "Inbound",
-            "help": "Settings for receiving messages from remote A2A agents"
-        },
-        "inbound.agentCard": {
-            "label": "Agent Card",
-            "help": "Customise how your agent appears to other agents"
-        },
-        "inbound.agents": {
-            "label": "Hosted Agents",
-            "help": "Expose multiple agents, keyed by agent ID, each on its own /a2a/<agentId> endpoint and Agent Card"
-        },
-        "inbound.apiKeys": {
-            "label": "API Keys",
-            "help": "Authentication keys for incoming A2A requests"
-        },
-        "inbound.auth": {
-            "label": "Inbound Auth",
-            "help": "Authentication provider for incoming A2A requests (apiKey, rodit, or none)"
-        },
-        "inbound.auth.provider": {
-            "label": "Auth Provider",
-            "help": "Use apiKey (default), rodit (Passport JWT), or none"
-        },
-        "inbound.auth.issuer": {
-            "label": "JWT Issuer",
-            "help": "Expected JWT iss claim when provider is rodit"
-        },
-        "inbound.auth.audience": {
-            "label": "JWT Audience",
-            "help": "Expected JWT aud claim when provider is rodit"
-        },
-        "inbound.auth.identityClaim": {
-            "label": "Identity Claim",
-            "help": "JWT claim mapped to inbound sender label (default token_id)"
-        },
-        "inbound.auth.allowApiKeyFallback": {
-            "label": "Allow API Key Fallback",
-            "help": "When provider is rodit, also accept configured apiKeys"
-        },
-        "inbound.auth.logLevel": {
-            "label": "RODiT Log Level",
-            "help": "Winston log level for @rodit/rodit-auth-be when loaded (default error)"
-        },
-        "inbound.publicBaseUrl": {
-            "label": "Public Base URL",
-            "help": "External base URL for Agent Card discovery (overrides request Host and proxy headers)"
-        },
-        "audit": {
-            "label": "Audit Logging",
-            "help": "Structured NDJSON audit logs for inbound/outbound A2A and RODiT login events"
-        },
-        "audit.enabled": {
-            "label": "Enable Audit",
-            "help": "Write daily a2a-audit-YYYY-MM-DD.jsonl files (default false; opt-in)"
-        },
-        "audit.logDir": {
-            "label": "Audit Log Directory",
-            "help": "Directory for audit JSONL files (default stateDir/a2a/audit)"
-        },
-        "audit.retentionDays": {
-            "label": "Audit Retention Days",
-            "help": "Delete rotated audit files older than this many days (default 30)"
-        },
-        "audit.includeContentSummary": {
-            "label": "Include Content Summary",
-            "help": "Store a truncated text summary of messages (JWTs never logged)"
-        }
+    "outbound.auth": {
+      "label": "Outbound Auth",
+      "help": "Authentication for outbound A2A calls (RODiT JWT login)"
     },
-    "configSchema": {
+    "outbound.auth.provider": {
+      "label": "Outbound Auth Provider",
+      "help": "Use rodit for P2P peer-issued JWT login (NEAR_CREDENTIALS_FILE_PATH)"
+    },
+    "outbound.auth.jwtCacheTtlSeconds": {
+      "label": "JWT Cache TTL",
+      "help": "Seconds to cache outbound RODiT JWT before re-login"
+    },
+    "outbound.auth.logLevel": {
+      "label": "RODiT Log Level",
+      "help": "Winston log level for @rodit/rodit-auth-be when loaded (default error)"
+    },
+    "outbound.tlsSkipVerify": {
+      "label": "Skip TLS Verify",
+      "help": "Disable TLS certificate verification for outbound HTTPS to peer agents. Use for self-signed Passport peer gateways; leave off when peers present CA-trusted certificates."
+    },
+    "inbound": {
+      "label": "Inbound",
+      "help": "Settings for receiving messages from remote A2A agents"
+    },
+    "inbound.agentCard": {
+      "label": "Agent Card",
+      "help": "Customise how your agent appears to other agents"
+    },
+    "inbound.agents": {
+      "label": "Hosted Agents",
+      "help": "Expose multiple agents, keyed by agent ID, each on its own /a2a/<agentId> endpoint and Agent Card"
+    },
+    "inbound.apiKeys": {
+      "label": "API Keys",
+      "help": "Authentication keys for incoming A2A requests"
+    },
+    "inbound.auth": {
+      "label": "Inbound Auth",
+      "help": "Authentication provider for incoming A2A requests (apiKey, rodit, or none)"
+    },
+    "inbound.auth.provider": {
+      "label": "Auth Provider",
+      "help": "Use apiKey (default), rodit (Passport JWT), or none"
+    },
+    "inbound.auth.issuer": {
+      "label": "JWT Issuer",
+      "help": "Expected JWT iss claim when provider is rodit"
+    },
+    "inbound.auth.audience": {
+      "label": "JWT Audience",
+      "help": "Expected JWT aud claim when provider is rodit"
+    },
+    "inbound.auth.identityClaim": {
+      "label": "Identity Claim",
+      "help": "JWT claim mapped to inbound sender label (default token_id)"
+    },
+    "inbound.auth.allowApiKeyFallback": {
+      "label": "Allow API Key Fallback",
+      "help": "When provider is rodit, also accept configured apiKeys"
+    },
+    "inbound.auth.logLevel": {
+      "label": "RODiT Log Level",
+      "help": "Winston log level for @rodit/rodit-auth-be when loaded (default error)"
+    },
+    "inbound.publicBaseUrl": {
+      "label": "Public Base URL",
+      "help": "External base URL for Agent Card discovery (overrides request Host and proxy headers)"
+    },
+    "audit": {
+      "label": "Audit Logging",
+      "help": "Structured NDJSON audit logs for inbound/outbound A2A and RODiT login events"
+    },
+    "audit.enabled": {
+      "label": "Enable Audit",
+      "help": "Write daily a2a-audit-YYYY-MM-DD.jsonl files (default false; opt-in)"
+    },
+    "audit.logDir": {
+      "label": "Audit Log Directory",
+      "help": "Directory for audit JSONL files (default stateDir/a2a/audit)"
+    },
+    "audit.retentionDays": {
+      "label": "Audit Retention Days",
+      "help": "Delete rotated audit files older than this many days (default 30)"
+    },
+    "audit.includeContentSummary": {
+      "label": "Include Content Summary",
+      "help": "Store a truncated text summary of messages (JWTs never logged)"
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "$defs": {
+      "agentCard": {
         "type": "object",
         "additionalProperties": false,
-        "$defs": {
-            "agentCard": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "name": { "type": "string" },
-                    "description": { "type": "string" },
-                    "version": { "type": "string" },
-                    "defaultInputModes": { "type": "array", "items": { "type": "string" } },
-                    "defaultOutputModes": { "type": "array", "items": { "type": "string" } },
-                    "skills": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "required": ["id", "name", "description"],
-                            "additionalProperties": false,
-                            "properties": {
-                                "id": { "type": "string" },
-                                "name": { "type": "string" },
-                                "description": { "type": "string" },
-                                "tags": { "type": "array", "items": { "type": "string" } },
-                                "examples": { "type": "array", "items": { "type": "string" } },
-                                "inputModes": { "type": "array", "items": { "type": "string" } },
-                                "outputModes": { "type": "array", "items": { "type": "string" } }
-                            }
-                        }
-                    },
-                    "extensions": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                            "identyclaw": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                    "registryId": { "type": "string" },
-                                    "registryUrl": { "type": "string" },
-                                    "passportTokenId": { "type": "string" },
-                                    "did": { "type": "string" },
-                                    "verifyUrl": { "type": "string" },
-                                    "verifyRpcDocs": { "type": "string" },
-                                    "channels": { "type": "array", "items": { "type": "string" } },
-                                    "contactUris": {
-                                        "type": "array",
-                                        "items": { "type": "string" }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "properties": {
-            "audit": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "enabled": {
-                        "type": "boolean",
-                        "description": "Write structured A2A audit logs (default false; opt-in)"
-                    },
-                    "logDir": {
-                        "type": "string",
-                        "description": "Directory for daily a2a-audit-YYYY-MM-DD.jsonl files (default stateDir/a2a/audit)"
-                    },
-                    "retentionDays": {
-                        "type": "number",
-                        "description": "Delete rotated audit files older than this many days (default 30)"
-                    },
-                    "includeContentSummary": {
-                        "type": "boolean",
-                        "description": "Include truncated message text summaries (never JWTs; default true)"
-                    }
-                }
-            },
-            "outbound": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "agents": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "object",
-                            "required": ["url"],
-                            "additionalProperties": false,
-                            "properties": {
-                                "url": { "type": "string" },
-                                "loginBaseUrl": {
-                                    "type": "string",
-                                    "description": "P2P RODiT login base URL override (Phase 9)"
-                                },
-                                "custom_headers": {
-                                    "type": "object",
-                                    "additionalProperties": { "type": "string" }
-                                }
-                            }
-                        }
-                    },
-                    "auth": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                            "provider": {
-                                "type": "string",
-                                "enum": ["rodit"]
-                            },
-                            "jwtCacheTtlSeconds": { "type": "number" },
-                            "peerLoginPath": { "type": "string" },
-                            "peerTimestampPath": { "type": "string" },
-                            "logLevel": { "type": "string" }
-                        }
-                    },
-                    "taskStore": { "type": "boolean" },
-                    "fileStore": { "type": "boolean" },
-                    "sendMessageCharacterLimit": { "type": "number" },
-                    "minimizedObjectStringLength": { "type": "number" },
-                    "viewArtifactCharacterLimit": { "type": "number" },
-                    "agentCardTimeout": { "type": "number" },
-                    "sendMessageTimeout": { "type": "number" },
-                    "getTaskTimeout": { "type": "number" },
-                    "getTaskPollInterval": { "type": "number" },
-                    "tlsSkipVerify": {
-                        "type": "boolean",
-                        "description": "Skip TLS certificate verification for outbound HTTPS (self-signed Passport peers)"
-                    },
-                    "resolvePeersByTokenId": {
-                        "type": "boolean",
-                        "description": "Resolve unknown Passport token_id peers via IdentyClaw API /full, then on-chain metadata.webhook_url fallback (default true with rodit outbound auth)"
-                    },
-                    "persistResolvedPeers": {
-                        "type": "boolean",
-                        "description": "Persist identity-resolved peers to stateDir/a2a/outbound/peers.json"
-                    }
-                }
-            },
-            "inbound": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "agentCard": { "$ref": "#/$defs/agentCard" },
-                    "agents": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                                "agentCard": { "$ref": "#/$defs/agentCard" }
-                            }
-                        }
-                    },
-                    "allowUnauthenticated": { "type": "boolean" },
-                    "auth": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                            "provider": {
-                                "type": "string",
-                                "enum": ["rodit", "apiKey", "none"]
-                            },
-                            "issuer": { "type": "string" },
-                            "audience": {
-                                "type": "string",
-                                "description": "Own passport owner_id — expected JWT aud for P2P-issued peer tokens"
-                            },
-                            "identityClaim": { "type": "string" },
-                            "allowApiKeyFallback": { "type": "boolean" },
-                            "logLevel": { "type": "string" }
-                        }
-                    },
-                    "apiKeys": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "required": ["label", "key"],
-                            "additionalProperties": false,
-                            "properties": {
-                                "label": { "type": "string" },
-                                "key": { "type": "string" }
-                            }
-                        }
-                    },
-                    "publicBaseUrl": { "type": "string" },
-                    "roditLogin": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                            "enabled": { "type": "boolean" },
-                            "loginPath": { "type": "string" },
-                            "timestampPath": { "type": "string" },
-                            "loginMode": {
-                                "type": "string",
-                                "enum": ["partner", "p2p", "promiscuous"]
-                            }
-                        }
-                    }
-                }
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "defaultInputModes": {
+            "type": "array",
+            "items": {
+              "type": "string"
             }
+          },
+          "defaultOutputModes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "description"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "examples": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "inputModes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "outputModes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "extensions": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "identyclaw": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "registryId": {
+                    "type": "string"
+                  },
+                  "registryUrl": {
+                    "type": "string"
+                  },
+                  "passportTokenId": {
+                    "type": "string"
+                  },
+                  "did": {
+                    "type": "string"
+                  },
+                  "verifyUrl": {
+                    "type": "string"
+                  },
+                  "verifyRpcDocs": {
+                    "type": "string"
+                  },
+                  "channels": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "contactUris": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
+      }
+    },
+    "properties": {
+      "audit": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Write structured A2A audit logs (default false; opt-in)"
+          },
+          "logDir": {
+            "type": "string",
+            "description": "Directory for daily a2a-audit-YYYY-MM-DD.jsonl files (default stateDir/a2a/audit)"
+          },
+          "retentionDays": {
+            "type": "number",
+            "description": "Delete rotated audit files older than this many days (default 30)"
+          },
+          "includeContentSummary": {
+            "type": "boolean",
+            "description": "Include truncated message text summaries (never JWTs; default true)"
+          }
+        }
+      },
+      "outbound": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "agents": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "url"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "url": {
+                  "type": "string"
+                },
+                "loginBaseUrl": {
+                  "type": "string",
+                  "description": "P2P RODiT login base URL override (Phase 9)"
+                },
+                "custom_headers": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "auth": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "rodit"
+                ]
+              },
+              "jwtCacheTtlSeconds": {
+                "type": "number"
+              },
+              "peerLoginPath": {
+                "type": "string"
+              },
+              "peerTimestampPath": {
+                "type": "string"
+              },
+              "logLevel": {
+                "type": "string"
+              }
+            }
+          },
+          "taskStore": {
+            "type": "boolean"
+          },
+          "fileStore": {
+            "type": "boolean"
+          },
+          "sendMessageCharacterLimit": {
+            "type": "number"
+          },
+          "minimizedObjectStringLength": {
+            "type": "number"
+          },
+          "viewArtifactCharacterLimit": {
+            "type": "number"
+          },
+          "agentCardTimeout": {
+            "type": "number"
+          },
+          "sendMessageTimeout": {
+            "type": "number"
+          },
+          "getTaskTimeout": {
+            "type": "number"
+          },
+          "getTaskPollInterval": {
+            "type": "number"
+          },
+          "tlsSkipVerify": {
+            "type": "boolean",
+            "description": "Skip TLS certificate verification for outbound HTTPS (self-signed Passport peers)"
+          },
+          "resolvePeersByTokenId": {
+            "type": "boolean",
+            "description": "Resolve unknown Passport token_id peers via IdentyClaw API /full, then on-chain metadata.webhook_url fallback (default true with rodit outbound auth)"
+          },
+          "persistResolvedPeers": {
+            "type": "boolean",
+            "description": "Persist identity-resolved peers to stateDir/a2a/outbound/peers.json"
+          }
+        }
+      },
+      "inbound": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "agentCard": {
+            "$ref": "#/$defs/agentCard"
+          },
+          "agents": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "agentCard": {
+                  "$ref": "#/$defs/agentCard"
+                }
+              }
+            }
+          },
+          "allowUnauthenticated": {
+            "type": "boolean"
+          },
+          "auth": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "rodit",
+                  "apiKey",
+                  "none"
+                ]
+              },
+              "issuer": {
+                "type": "string"
+              },
+              "audience": {
+                "type": "string",
+                "description": "Own passport owner_id \u2014 expected JWT aud for P2P-issued peer tokens"
+              },
+              "identityClaim": {
+                "type": "string"
+              },
+              "allowApiKeyFallback": {
+                "type": "boolean"
+              },
+              "logLevel": {
+                "type": "string"
+              }
+            }
+          },
+          "apiKeys": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "label",
+                "key"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "publicBaseUrl": {
+            "type": "string"
+          },
+          "roditLogin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "loginPath": {
+                "type": "string"
+              },
+              "timestampPath": {
+                "type": "string"
+              },
+              "loginMode": {
+                "type": "string",
+                "enum": [
+                  "partner",
+                  "p2p",
+                  "promiscuous"
+                ]
+              }
+            }
+          }
+        }
+      }
     }
+  }
 }
