@@ -112,8 +112,9 @@ function createApi(options?: {
                           resolveStateDir: () => "/tmp",
                       },
                       config: {
-                          loadConfig: () => ({}),
-                          writeConfigFile: async () => {},
+                          current: () => ({}),
+                          replaceConfigFile: async () => {},
+                          mutateConfigFile: async () => ({}),
                       },
                   }
                 : ({} as Record<string, never>),
@@ -348,7 +349,7 @@ describe("plugin registration", () => {
     });
 
     test("revoke-key matches labels case-insensitively", async () => {
-        const writeConfigFile = mock(async () => {});
+        const replaceConfigFile = mock(async () => {});
         const { api, cliRegistrations } = createApi({
             config: {
                 agents: {
@@ -358,7 +359,7 @@ describe("plugin registration", () => {
                 },
             },
         });
-        api.runtime.config.loadConfig = () => ({
+        api.runtime.config.current = () => ({
             plugins: {
                 entries: {
                     "identyclaw-a2a": {
@@ -374,7 +375,7 @@ describe("plugin registration", () => {
                 },
             },
         });
-        api.runtime.config.writeConfigFile = writeConfigFile;
+        api.runtime.config.replaceConfigFile = replaceConfigFile;
 
         plugin.register(api as never);
 
@@ -390,18 +391,24 @@ describe("plugin registration", () => {
             consoleLogSpy.mockRestore();
         }
 
-        expect(writeConfigFile).toHaveBeenCalledTimes(1);
-        expect(writeConfigFile.mock.calls[0]?.[0]).toEqual({
-            plugins: {
-                entries: {
-                    "identyclaw-a2a": {
-                        config: {
-                            inbound: {
-                                apiKeys: [{ label: "Bob", key: "secret-2" }],
+        expect(replaceConfigFile).toHaveBeenCalledTimes(1);
+        expect(replaceConfigFile.mock.calls[0]?.[0]).toEqual({
+            nextConfig: {
+                plugins: {
+                    entries: {
+                        "identyclaw-a2a": {
+                            config: {
+                                inbound: {
+                                    apiKeys: [{ label: "Bob", key: "secret-2" }],
+                                },
                             },
                         },
                     },
                 },
+            },
+            afterWrite: {
+                mode: "restart",
+                reason: "A2A inbound API key revoked",
             },
         });
     });

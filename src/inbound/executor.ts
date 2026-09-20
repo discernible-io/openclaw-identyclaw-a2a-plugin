@@ -19,7 +19,7 @@ import type {
     TaskStore,
 } from "@a2a-js/sdk/server";
 import { type FileStore, LocalFileStore } from "@a2anet/a2a-utils";
-import type { OpenClawConfig, PluginRuntime } from "openclaw/plugin-sdk";
+import type { OpenClawConfig, PluginRuntime } from "openclaw/plugin-sdk/core";
 import { dispatchInboundReplyWithBase } from "openclaw/plugin-sdk/inbound-reply-dispatch";
 import { resolveOutboundMediaUrls } from "openclaw/plugin-sdk/reply-payload";
 import { resolveThreadSessionKeys } from "openclaw/plugin-sdk/routing";
@@ -313,11 +313,11 @@ export class OpenClawExecutor implements AgentExecutor {
                         error: toLogError(err),
                     });
                 },
-                onDispatchError: (err: unknown, info: { kind: string }) => {
+                onDispatchError: (err: unknown, info?: { kind: string }) => {
                     dispatchError ??= err;
                     this.logger?.error("Failed dispatching inbound reply", {
                         operation: "inbound.execute.dispatch",
-                        kind: info.kind,
+                        kind: info?.kind,
                         error: toLogError(err),
                     });
                 },

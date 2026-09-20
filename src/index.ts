@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-export const VERSION = "0.4.12"; // x-release-please-version
+export const VERSION = "0.4.14"; // x-release-please-version
 
 import * as path from "node:path";
 
 import type { AgentCard } from "@a2a-js/sdk";
 import { DefaultRequestHandler } from "@a2a-js/sdk/server";
 import { JSONTaskStore, LocalFileStore } from "@a2anet/a2a-utils";
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
+import type { OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
 import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 
 import { createA2AAuditLogger } from "./audit/logger.js";
@@ -215,7 +215,7 @@ function registerCli(
                         const keyLabel = assertValidA2AInboundKeyLabel(
                             label?.trim() || `key-${Date.now()}`,
                         );
-                        const currentConfig = api.runtime.config.loadConfig() as Record<
+                        const currentConfig = api.runtime.config.current() as Record<
                             string,
                             unknown
                         >;
@@ -227,14 +227,18 @@ function registerCli(
                             { label: keyLabel, key },
                         ]);
 
-                        await api.runtime.config.writeConfigFile(
-                            buildRootConfigWithA2A(currentConfig, {
+                        await api.runtime.config.replaceConfigFile({
+                            nextConfig: buildRootConfigWithA2A(currentConfig, {
                                 inbound: {
                                     ...existingInbound,
                                     apiKeys: [...existingKeys, { label: keyLabel, key }],
                                 },
-                            }) as import("openclaw/plugin-sdk").OpenClawConfig,
-                        );
+                            }) as import("openclaw/plugin-sdk/config-contracts").OpenClawConfig,
+                            afterWrite: {
+                                mode: "restart",
+                                reason: "A2A inbound API key generated",
+                            },
+                        });
                         console.log(
                             `Generated API key "${keyLabel}": ${key}\n\nRestart the gateway to apply.`,
                         );
@@ -250,7 +254,7 @@ function registerCli(
                 .description("List configured inbound A2A API keys")
                 .action(() => {
                     try {
-                        const currentConfig = api.runtime.config.loadConfig() as Record<
+                        const currentConfig = api.runtime.config.current() as Record<
                             string,
                             unknown
                         >;
@@ -278,7 +282,7 @@ function registerCli(
                 .action(async (label: string) => {
                     try {
                         const targetLabel = label.trim().toLowerCase();
-                        const currentConfig = api.runtime.config.loadConfig() as Record<
+                        const currentConfig = api.runtime.config.current() as Record<
                             string,
                             unknown
                         >;
@@ -302,14 +306,18 @@ function registerCli(
                             return;
                         }
 
-                        await api.runtime.config.writeConfigFile(
-                            buildRootConfigWithA2A(currentConfig, {
+                        await api.runtime.config.replaceConfigFile({
+                            nextConfig: buildRootConfigWithA2A(currentConfig, {
                                 inbound: {
                                     ...existingInbound,
                                     apiKeys: filtered.length > 0 ? filtered : undefined,
                                 },
-                            }) as import("openclaw/plugin-sdk").OpenClawConfig,
-                        );
+                            }) as import("openclaw/plugin-sdk/config-contracts").OpenClawConfig,
+                            afterWrite: {
+                                mode: "restart",
+                                reason: "A2A inbound API key revoked",
+                            },
+                        });
                         console.log(`Revoked key "${label}". Restart the gateway to apply.`);
                     } catch (err) {
                         console.error(
@@ -606,12 +614,15 @@ const a2aPlugin = definePluginEntry({
                         return null;
                     }
                     return createUpdateAgentCardTool({
-                        loadConfig: async () =>
-                            api.runtime.config.loadConfig() as Record<string, unknown>,
-                        writeConfigFile: (cfg) =>
-                            api.runtime.config.writeConfigFile(
-                                cfg as import("openclaw/plugin-sdk").OpenClawConfig,
-                            ),
+                        currentConfig: () =>
+                            api.runtime.config.current() as Record<string, unknown>,
+                        replaceConfigFile: async ({ nextConfig, afterWrite }) => {
+                            await api.runtime.config.replaceConfigFile({
+                                nextConfig:
+                                    nextConfig as import("openclaw/plugin-sdk/config-contracts").OpenClawConfig,
+                                afterWrite,
+                            });
+                        },
                         buildConfigUpdate: (patch) => runtime.endpoint.buildConfigUpdate(patch),
                         updateLiveCard: (patch) => applyCardPatch(runtime, patch),
                     });

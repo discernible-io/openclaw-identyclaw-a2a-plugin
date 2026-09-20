@@ -24,10 +24,15 @@ function makeDeps(existingConfig?: Record<string, unknown>) {
     let written: Record<string, unknown> | null = null;
 
     return {
-        loadConfig: mock(async () => storedConfig),
-        writeConfigFile: mock(async (cfg: Record<string, unknown>) => {
-            written = cfg;
-        }),
+        currentConfig: mock(async () => storedConfig),
+        replaceConfigFile: mock(
+            async (params: {
+                nextConfig: Record<string, unknown>;
+                afterWrite: { mode: string; reason?: string };
+            }) => {
+                written = params.nextConfig;
+            },
+        ),
         buildConfigUpdate: mock((patch) => ({ inbound: { agentCard: patch } })),
         updateLiveCard: mock(() => {}),
         getWritten: () => written,
@@ -54,7 +59,11 @@ describe("createUpdateAgentCardTool", () => {
         const result = await tool.execute("call-1", { name: "New Name" });
         const parsed = JSON.parse(result.content[0].text);
         expect(parsed.updated).toContain('name: "New Name"');
-        expect(deps.writeConfigFile).toHaveBeenCalledTimes(1);
+        expect(deps.replaceConfigFile).toHaveBeenCalledTimes(1);
+        expect(deps.replaceConfigFile.mock.calls[0]?.[0]?.afterWrite).toEqual({
+            mode: "none",
+            reason: "a2a_update_agent_card applies the card live in-process",
+        });
         expect(deps.updateLiveCard).toHaveBeenCalledTimes(1);
 
         // Check the written config has the name under inbound.agentCard
@@ -96,7 +105,7 @@ describe("createUpdateAgentCardTool", () => {
 
     test("handles config write errors", async () => {
         const deps = makeDeps();
-        (deps.writeConfigFile as ReturnType<typeof mock>).mockImplementation(async () => {
+        (deps.replaceConfigFile as ReturnType<typeof mock>).mockImplementation(async () => {
             throw new Error("Disk full");
         });
         const tool = createUpdateAgentCardTool(deps);

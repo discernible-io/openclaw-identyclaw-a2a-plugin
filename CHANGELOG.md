@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.4.14 — 2026-09-20
+
+- Migrate plugin runtime config off removed `loadConfig` / `writeConfigFile` to `current` / `replaceConfigFile` (OpenClaw **2026.9.1+**).
+- Switch SDK imports to focused subpaths (`plugin-entry`, `config-contracts`, `core`) after the broad `openclaw/plugin-sdk` barrel was removed.
+- Raise `minGatewayVersion` / peer `openclaw` to `>=2026.9.1` so IdentyClaw A2A stays compatible with gateway **2026.9.5**.
+- Adapt inbound executor tests for the 2026.9 deliver `(payload, info)` contract and `settledReceipt` dispatcher results.
+
 ## 0.4.13 — 2026-09-19
 
 - Bump `@rodit/rodit-auth-be` to `9.16.2`.

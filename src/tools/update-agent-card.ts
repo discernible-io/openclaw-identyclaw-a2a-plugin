@@ -8,9 +8,20 @@ import type { A2AAgentCardConfig } from "../config.js";
 import { buildRootConfigWithA2A } from "../config.js";
 import { type AgentTool, jsonResult } from "../types.js";
 
+/** Post-write policy required by OpenClaw plugin runtime config writers (2026.9.1+). */
+export type ConfigAfterWrite =
+    | { mode: "auto" }
+    | { mode: "restart"; reason: string }
+    | { mode: "none"; reason: string };
+
 export type UpdateAgentCardDeps = {
-    loadConfig: () => Promise<Record<string, unknown>>;
-    writeConfigFile: (config: Record<string, unknown>) => Promise<void>;
+    /** Current process config snapshot (replaces removed `loadConfig`). */
+    currentConfig: () => Record<string, unknown> | Promise<Record<string, unknown>>;
+    /** Persist a full config replacement (replaces removed `writeConfigFile`). */
+    replaceConfigFile: (params: {
+        nextConfig: Record<string, unknown>;
+        afterWrite: ConfigAfterWrite;
+    }) => Promise<void>;
     /** Wrap a card patch in the A2A config shape that persists it to this agent. */
     buildConfigUpdate: (patch: Partial<A2AAgentCardConfig>) => Record<string, unknown>;
     /** Called after config is written to update the in-memory agent card. */
@@ -170,10 +181,18 @@ export function createUpdateAgentCardTool(deps: UpdateAgentCardDeps): AgentTool 
             }
 
             try {
-                const currentConfig = await deps.loadConfig();
-                await deps.writeConfigFile(
-                    buildRootConfigWithA2A(currentConfig, deps.buildConfigUpdate(patch)),
-                );
+                const currentConfig = await deps.currentConfig();
+                await deps.replaceConfigFile({
+                    nextConfig: buildRootConfigWithA2A(
+                        currentConfig,
+                        deps.buildConfigUpdate(patch),
+                    ),
+                    // Caller owns the follow-up: live card is updated in-process below.
+                    afterWrite: {
+                        mode: "none",
+                        reason: "a2a_update_agent_card applies the card live in-process",
+                    },
+                });
                 deps.updateLiveCard(patch);
 
                 const changes: string[] = [];
