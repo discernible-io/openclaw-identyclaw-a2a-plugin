@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.4.15 — 2026-09-28
+
+- Auto-discover Passport credentials from `secrets/near-credentials` (`.active` or sole `*.json`) when `NEAR_CREDENTIALS_FILE_PATH` is unset; set `RODIT_NEAR_CREDENTIALS_SOURCE=file` accordingly.
+
 ## 0.4.14 — 2026-09-20
 
 - Migrate plugin runtime config off removed `loadConfig` / `writeConfigFile` to `current` / `replaceConfigFile` (OpenClaw **2026.9.1+**).

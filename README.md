@@ -98,15 +98,16 @@ Outbound P2P login uses the NEAR Passport credentials file ([gennearaccount](htt
 
 | Variable | Purpose |
 | -------- | ------- |
-| `RODIT_NEAR_CREDENTIALS_SOURCE` | `file` (recommended with identyclaw-agents) |
-| `NEAR_CREDENTIALS_FILE_PATH` | Path to Passport JSON, e.g. `…/secrets/near-credentials/<hash>.json` |
+| `RODIT_NEAR_CREDENTIALS_SOURCE` | `file` (auto-set when a credential file is resolved) |
+| `NEAR_CREDENTIALS_FILE_PATH` | Optional override path to Passport JSON; when unset, discovers `.active` → `<id>.json` or the sole `*.json` under `IDENTYCLAW_NEAR_CREDENTIALS_DIR` / `~/.openclaw/secrets/near-credentials` |
+| `IDENTYCLAW_NEAR_CREDENTIALS_DIR` | Optional credentials directory override |
 | `NEAR_CONTRACT_ID` | RODiT contract on mainnet (e.g. `genaaaa-identyclaw-com.near`) |
 
 `IDENTYCLAW_*` env vars remain used by **identyclaw-tools** (HOLA, DID, identity) on the same host. This plugin uses `IDENTYCLAW_BASE_URL` (or `outbound.identityApiBaseUrl` / Passport `subjectuniqueidentifier_url`) only for identity-API peer resolution — it does not default to `https://api.identyclaw.com`.
 
 Outbound login calls `login_server` against each peer's `/api/login` (with `subjectuniqueidentifier_url` set to that peer's gateway base). JWTs are cached **per outbound peer** and scoped to that receiver's `aud`.
 
-Keep credentials in env or secrets files — not in `openclaw.json`.
+Keep credentials in the credential file (or env) — not in `openclaw.json`. Vanilla path: install → gateway creates/uses `secrets/near-credentials` → purchase Passport → use A2A (no `config set` to sync keys).
 
 ### Embedding in OpenClaw chat / gateway (quiet mode)
 

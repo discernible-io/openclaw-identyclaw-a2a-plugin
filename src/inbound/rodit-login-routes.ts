@@ -7,6 +7,7 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import type { A2AAuditLogger } from "../audit/logger.js";
 import { extractSafeLoginPeer } from "../audit/redact.js";
 import { applyRoditEmbedEnv } from "../auth/rodit-embed-env.js";
+import { ensureNearCredentialsFileEnv } from "../auth/near-credentials-path.js";
 import { loadRoditAuthBe } from "../auth/rodit-runtime.js";
 import type { A2AInboundRoditLoginConfig } from "../config.js";
 import { type A2AHostLogger, createRequestId, toLogError } from "../log.js";
@@ -25,16 +26,7 @@ type RoditClientConstructor = {
 let roditClientPromise: Promise<RoditClientWithLogin> | null = null;
 
 function ensureRoditCredentialSource(): void {
-    if (process.env.RODIT_NEAR_CREDENTIALS_SOURCE?.trim()) {
-        return;
-    }
-    if (process.env.NEAR_CREDENTIALS_FILE_PATH?.trim()) {
-        process.env.RODIT_NEAR_CREDENTIALS_SOURCE = "file";
-        return;
-    }
-    throw new Error(
-        "RODiT login routes require NEAR_CREDENTIALS_FILE_PATH (Passport credentials file)",
-    );
+    ensureNearCredentialsFileEnv();
 }
 
 function applyRoditLoginMode(config: A2AInboundRoditLoginConfig): void {

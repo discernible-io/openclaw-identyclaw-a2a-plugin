@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+import { ensureNearCredentialsFileEnv } from "./near-credentials-path.js";
 import { applyRoditEmbedEnv } from "./rodit-embed-env.js";
 import { loadRoditAuthBe, type RoditLoginServerFn } from "./rodit-runtime.js";
 
@@ -30,16 +31,7 @@ export type RoditOwnConfig = Parameters<RoditLoginServerFn>[0] & {
 let roditClientPromise: Promise<RoditClientInstance> | null = null;
 
 function ensureRoditCredentialSource(): void {
-    if (process.env.RODIT_NEAR_CREDENTIALS_SOURCE?.trim()) {
-        return;
-    }
-    if (process.env.NEAR_CREDENTIALS_FILE_PATH?.trim()) {
-        process.env.RODIT_NEAR_CREDENTIALS_SOURCE = "file";
-        return;
-    }
-    throw new Error(
-        "RODiT credentials not configured: set NEAR_CREDENTIALS_FILE_PATH (from secrets/near-credentials/*.json)",
-    );
+    ensureNearCredentialsFileEnv();
 }
 
 async function getRoditClient(logLevel?: string): Promise<RoditClientInstance> {
