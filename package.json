@@ -1,6 +1,6 @@
 {
   "name": "@identyclaw/openclaw-a2a-plugin",
-  "version": "0.4.15",
+  "version": "0.4.16",
   "description": "IdentyClaw fork of the OpenClaw A2A plugin with RODiT / Passport JWT authentication for peer agents.",
   "type": "module",
   "exports": {
@@ -34,12 +34,12 @@
       "./dist/index.js"
     ],
     "compat": {
-      "pluginApi": ">=2026.9.1",
-      "minGatewayVersion": "2026.9.1"
+      "pluginApi": ">=2026.9.7",
+      "minGatewayVersion": "2026.9.7"
     },
     "build": {
-      "openclawVersion": "2026.9.5",
-      "pluginSdkVersion": "2026.9.5"
+      "openclawVersion": "2026.9.7",
+      "pluginSdkVersion": "2026.9.7"
     }
   },
   "keywords": [
@@ -68,7 +68,7 @@
     "zod-to-json-schema": "^3.25.1"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.9.1"
+    "openclaw": ">=2026.9.7"
   },
   "overrides": {
     "undici": "^6.28.0"
@@ -77,13 +77,13 @@
     "@biomejs/biome": "^1.9.0",
     "@types/bun": "latest",
     "@types/ws": "^8.0.0",
-    "openclaw": "2026.9.5",
+    "openclaw": "2026.9.7",
     "typescript": "^5.7.0"
   },
   "trustedDependencies": [
     "@biomejs/biome"
   ],
   "engines": {
-    "node": ">=22.19.0"
+    "node": ">=24.16.0"
   }
 }

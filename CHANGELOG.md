@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.4.16 — 2026-10-01
+
+- Rebuild / re-pin against OpenClaw Gateway **2026.9.7** (`peerDependencies` / `compat` / `build`).
+- Require Node **≥ 24.16**. No runtime API changes (still `replaceConfigFile` / focused SDK subpaths).
+
 ## 0.4.15 — 2026-09-28
 
 - Auto-discover Passport credentials from `secrets/near-credentials` (`.active` or sole `*.json`) when `NEAR_CREDENTIALS_FILE_PATH` is unset; set `RODIT_NEAR_CREDENTIALS_SOURCE=file` accordingly.
