@@ -7,9 +7,22 @@ on:
     branches: [main]
 
 jobs:
+  gitleaks:
+    name: Secret scan (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Secret scan (Gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   lint:
     name: Lint & Format
     runs-on: ubuntu-latest
+    needs: gitleaks
     steps:
       - uses: actions/checkout@v4
       - name: Install Bun
@@ -22,6 +35,7 @@ jobs:
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
+    needs: gitleaks
     steps:
       - uses: actions/checkout@v4
       - name: Install Bun
@@ -34,6 +48,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    needs: gitleaks
     steps:
       - uses: actions/checkout@v4
       - name: Install Bun
@@ -46,6 +61,7 @@ jobs:
   prepare-publish:
     name: Build and validate manifest
     runs-on: ubuntu-latest
+    needs: gitleaks
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

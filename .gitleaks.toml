@@ -1,0 +1,11 @@
+title = "openclaw-identyclaw-a2a-plugin gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Documented non-secret placeholders only"
+regexes = [
+  '''<jwt_token>''',
+  '''YOUR_JWT(_TOKEN)?''',
+]
