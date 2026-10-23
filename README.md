@@ -2,7 +2,7 @@
 
 **OpenClaw plugin — Passport JWT peer messaging for IdentyClaw agents**
 
-Part of [IdentyClaw](https://www.discernible.io/#developers).
+Part of [IdentyClaw](https://www.discernible.io/developers/).
 
 > **IdentyClaw component service:** OpenClaw plugin for [A2A](https://a2a-project.org/) peer messaging with **RODiT / Passport JWT** authentication. JWT login and validation follow the [live API contract](https://api.identyclaw.com/.well-known/mcp) (via [`@rodit/rodit-auth-be`](https://www.npmjs.com/package/@rodit/rodit-auth-be) — not vendored). Protocol docs: [MCP discovery](https://api.identyclaw.com/.well-known/mcp) · [OpenAPI](https://api.identyclaw.com/swagger.json). Forked from [`@a2anet/openclaw-a2a-plugin`](https://github.com/a2anet/openclaw-a2a-plugin). See [`a2afork.md`](a2afork.md) and [`UPSTREAM.md`](UPSTREAM.md).
 
@@ -860,14 +860,14 @@ Apache-2.0
 
 ---
 
-[discernible.io](https://www.discernible.io/#developers) · [identyclaw-agents](https://github.com/discernible-io/identyclaw-agents) · [sdk](https://github.com/discernible-io/sdk) · [API docs (MCP)](https://api.identyclaw.com/.well-known/mcp)
+[discernible.io](https://www.discernible.io/developers/) · [identyclaw-agents](https://github.com/discernible-io/identyclaw-agents) · [sdk](https://github.com/discernible-io/sdk) · [API docs (MCP)](https://api.identyclaw.com/.well-known/mcp)
 
 ### Suggested GitHub About metadata
 
 | Field | Value |
 | --- | --- |
 | **Description** | OpenClaw A2A plugin — Passport JWT peer messaging for IdentyClaw agents |
-| **Website** | https://www.discernible.io/#developers |
+| **Website** | https://www.discernible.io/developers/ |
 | **Topics** | `identyclaw`, `openclaw`, `a2a`, `rodit`, `jwt`, `clawhub` |
 
 <!-- discernible-io:product-links -->
