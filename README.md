@@ -25,6 +25,8 @@ Part of [IdentyClaw](https://www.discernible.io/developers/).
 
 Install this plugin when Passport-authenticated agents need to **call or accept A2A peers** — not for IdentyClaw API login or HOLA (use `identyclaw-tools` for that). Outbound P2P login uses NEAR Passport credentials in the [gennearaccount](https://github.com/discernible-io/gennearaccount) JSON layout under [`identyclaw-agents`](https://github.com/discernible-io/identyclaw-agents) `secrets/near-credentials/`.
 
+Coding and vocabulary conventions: reference-only [discernible-io/docs](https://github.com/discernible-io/docs) (`coding-standard`, `vocabulary-standard`). Open work: [`TODO.md`](TODO.md).
+
 Outbound and inbound agents exchange messages and files over the [A2A protocol](https://a2a-project.org/). [A2A Utils](https://github.com/a2anet/a2a-utils) powers the tool layer. Tailscale or a reverse proxy remains the operator's choice for exposing the gateway.
 
 Your agent gets 6 outbound tools for peer messaging without a third-party chat app or email:
